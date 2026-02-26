@@ -14,6 +14,19 @@ export default function DashboardHome({ setActive }) {
   const [refreshing, setRefreshing] = useState(false);
   const [timeRange, setTimeRange] = useState('week'); // week, month, year
   const [showMobileMenu, setShowMobileMenu] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Check screen size
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkScreenSize();
+    window.addEventListener('resize', checkScreenSize);
+    
+    return () => window.removeEventListener('resize', checkScreenSize);
+  }, []);
 
   const navigate = useNavigate();
   const { logout } = useAuth();
@@ -95,17 +108,11 @@ export default function DashboardHome({ setActive }) {
   ] : [];
 
   return (
-    <div className="space-y-4 md:space-y-6 px-2 sm:px-4">
+    // Add top padding for mobile header and bottom padding for mobile nav
+    <div className={`space-y-4 md:space-y-6 px-2 sm:px-4 ${isMobile ? 'pt-16 pb-24' : ''}`}>
       {/* Header Section */}
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
         <div className="flex items-center gap-3 w-full lg:w-auto">
-          {/* Mobile Menu Button - Hidden on desktop */}
-          <button 
-            onClick={() => setShowMobileMenu(!showMobileMenu)}
-            className="lg:hidden p-2 hover:bg-gray-100 rounded-lg"
-          >
-            <FaBars className="text-xl text-gray-600" />
-          </button>
           
           <div>
             <h1 className="text-xl md:text-2xl lg:text-3xl font-bold text-gray-800">
@@ -278,7 +285,7 @@ export default function DashboardHome({ setActive }) {
           </div>
         </div>
 
-        {/* Activity Timeline - Replace with your chart */}
+        {/* Activity Timeline */}
         <div className="bg-white rounded-xl shadow-lg p-4 md:p-6">
           <h3 className="text-base md:text-lg font-semibold mb-4 flex items-center gap-2">
             <FaBell className="text-purple-500" />

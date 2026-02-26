@@ -32,6 +32,19 @@ export default function AdminClassSubject() {
     const [expandedSection, setExpandedSection] = useState('all');
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [editingAssignment, setEditingAssignment] = useState(null); // For teacher change
+    const [isMobile, setIsMobile] = useState(false);
+
+    // Check screen size
+    useEffect(() => {
+        const checkScreenSize = () => {
+            setIsMobile(window.innerWidth < 768);
+        };
+        
+        checkScreenSize();
+        window.addEventListener('resize', checkScreenSize);
+        
+        return () => window.removeEventListener('resize', checkScreenSize);
+    }, []);
 
     /* INITIAL DATA LOAD */
     useEffect(() => {
@@ -249,7 +262,8 @@ export default function AdminClassSubject() {
     }
 
     return (
-        <div className="space-y-4 md:space-y-6 px-2 sm:px-4">
+        // Add top and bottom padding for mobile
+        <div className={`space-y-4 md:space-y-6 px-2 sm:px-4 ${isMobile ? 'pt-16 pb-24' : ''}`}>
             {/* Header */}
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
@@ -539,10 +553,107 @@ export default function AdminClassSubject() {
                         </div>
                     )}
 
-                    {/* Student Assignment Section (unchanged) */}
+                    {/* Student Assignment Section */}
                     {(activeTab === 'students' || window.innerWidth >= 640) && (
                         <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-                            {/* ... keep existing student assignment code ... */}
+                            <div 
+                                className="p-4 bg-gradient-to-r from-green-600 to-green-800 text-white flex justify-between items-center cursor-pointer sm:cursor-default"
+                                onClick={() => window.innerWidth < 640 && setExpandedSection(
+                                    expandedSection === 'students' ? 'all' : 'students'
+                                )}
+                            >
+                                <div className="flex items-center gap-3">
+                                    <FaUsers className="text-xl" />
+                                    <h2 className="text-lg font-semibold">Student Assignment</h2>
+                                </div>
+                                <button className="sm:hidden">
+                                    {expandedSection === 'students' ? <FaChevronUp /> : <FaChevronDown />}
+                                </button>
+                            </div>
+
+                            {(expandedSection === 'students' || expandedSection === 'all' || window.innerWidth >= 640) && (
+                                <div className="p-4 md:p-6 space-y-4">
+                                    {/* Student Assignment Form */}
+                                    <form onSubmit={assignStudent} className="space-y-4">
+                                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                                            {/* Student Search and Select */}
+                                            <div className="space-y-2">
+                                                <label className="block text-sm font-medium text-gray-700">
+                                                    Select Student
+                                                </label>
+                                                <div className="relative">
+                                                    <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                                                    <input
+                                                        type="text"
+                                                        placeholder="Search students..."
+                                                        value={searchStudent}
+                                                        onChange={(e) => setSearchStudent(e.target.value)}
+                                                        className="w-full border border-gray-300 pl-10 pr-4 py-2 rounded-lg focus:ring-2 focus:ring-green-500"
+                                                    />
+                                                </div>
+                                                <select
+                                                    value={studentId}
+                                                    onChange={(e) => setStudentId(e.target.value)}
+                                                    className="w-full border border-gray-300 p-2 rounded-lg focus:ring-2 focus:ring-green-500"
+                                                    size="4"
+                                                >
+                                                    <option value="">Select a student</option>
+                                                    {filteredStudents.map((s) => (
+                                                        <option key={s._id} value={s._id}>
+                                                            {s.name} - {s.email}
+                                                        </option>
+                                                    ))}
+                                                </select>
+                                            </div>
+
+                                            {/* Assign Button */}
+                                            <div className="flex items-end">
+                                                <button
+                                                    type="submit"
+                                                    className="w-full bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center gap-2"
+                                                >
+                                                    <FaUserGraduate /> Assign Student
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </form>
+
+                                    {/* Assigned Students List */}
+                                    {assignedStudents.length > 0 && (
+                                        <div className="mt-6">
+                                            <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
+                                                <FaUsers className="text-green-600" />
+                                                Assigned Students ({assignedStudents.length})
+                                            </h3>
+                                            <div className="overflow-x-auto">
+                                                <table className="w-full">
+                                                    <thead className="bg-gray-100">
+                                                        <tr>
+                                                            <th className="p-3 text-left">Student Name</th>
+                                                            <th className="p-3 text-left hidden sm:table-cell">Email</th>
+                                                            <th className="p-3 text-left hidden md:table-cell">Roll No</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {assignedStudents.map((s) => (
+                                                            <tr key={s._id} className="border-t hover:bg-gray-50">
+                                                                <td className="p-3">
+                                                                    <div className="flex items-center gap-2">
+                                                                        <FaUserGraduate className="text-gray-400" />
+                                                                        <span>{s.studentId.name}</span>
+                                                                    </div>
+                                                                </td>
+                                                                <td className="p-3 hidden sm:table-cell">{s.studentId.email}</td>
+                                                                <td className="p-3 hidden md:table-cell">{s.studentId.rollNo || 'N/A'}</td>
+                                                            </tr>
+                                                        ))}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            )}
                         </div>
                     )}
                 </>

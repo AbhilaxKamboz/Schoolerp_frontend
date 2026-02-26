@@ -6,7 +6,9 @@ import {
   FaUser, FaEnvelope, FaUserTag, FaToggleOn, FaToggleOff,
   FaEdit, FaKey, FaSearch, FaPlus, FaTimes, FaSave,
   FaMale, FaFemale, FaGenderless, FaUserGraduate, FaChalkboardTeacher,
-  FaUserCog, FaUserTie, FaIdCard, FaBook, FaChalkboard
+  FaUserCog, FaUserTie, FaIdCard, FaBook, FaChalkboard,
+  FaEye, FaTimesCircle, FaCalendar, FaPhone, FaMapMarker,
+  FaGraduationCap, FaSchool, FaUserCircle
 } from "react-icons/fa";
 
 export default function AdminUsers() {
@@ -18,6 +20,24 @@ export default function AdminUsers() {
   const [availableClasses, setAvailableClasses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  
+  // View User Modal State
+  const [viewUser, setViewUser] = useState(null);
+  const [showViewModal, setShowViewModal] = useState(false);
+  const [viewUserLoading, setViewUserLoading] = useState(false);
+
+  // Check screen size
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkScreenSize();
+    window.addEventListener('resize', checkScreenSize);
+    
+    return () => window.removeEventListener('resize', checkScreenSize);
+  }, []);
 
   // Shared form state for create + edit
   const [form, setForm] = useState({
@@ -114,6 +134,20 @@ export default function AdminUsers() {
     });
     setShowForm(true);
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  /* VIEW USER DETAILS */
+  const viewUserDetails = async (userId) => {
+    try {
+      setViewUserLoading(true);
+      const res = await API.get(`/admin/user/${userId}`);
+      setViewUser(res.data);
+      setShowViewModal(true);
+    } catch (err) {
+      errorAlert("Error", "Failed to load user details");
+    } finally {
+      setViewUserLoading(false);
+    }
   };
 
   /* ACTIVATE / DEACTIVATE USER */
@@ -264,6 +298,16 @@ export default function AdminUsers() {
     }
   };
 
+  /* Format date */
+  const formatDate = (dateString) => {
+    if (!dateString) return 'Not specified';
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
@@ -276,7 +320,8 @@ export default function AdminUsers() {
   }
 
   return (
-    <div className="space-y-4 md:space-y-6 px-2 sm:px-4">
+    // Add top and bottom padding for mobile
+    <div className={`space-y-4 md:space-y-6 px-2 sm:px-4 ${isMobile ? 'pt-16 pb-24' : ''}`}>
       {/* Header Section */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
@@ -539,9 +584,6 @@ export default function AdminUsers() {
                 <tr key={u._id} className="border-t hover:bg-gray-50 transition-colors">
                   <td className="p-3">
                     <div className="flex items-center gap-3">
-                      {/* <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-700 rounded-full flex items-center justify-center text-white font-bold">
-                        {u.name.charAt(0).toUpperCase()}
-                      </div> */}
                       <div>
                         <p className="font-medium">{u.name}</p>
                         <div className="flex items-center gap-1 text-xs text-gray-500">
@@ -574,6 +616,14 @@ export default function AdminUsers() {
                   </td>
                   <td className="p-3">
                     <div className="flex items-center justify-center gap-2">
+                      {/* View Button */}
+                      <button
+                        onClick={() => viewUserDetails(u._id)}
+                        className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors"
+                        title="View User Details"
+                      >
+                        <FaEye />
+                      </button>
                       <button
                         onClick={() => editUser(u)}
                         className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
@@ -613,9 +663,6 @@ export default function AdminUsers() {
             <div key={u._id} className="p-4 hover:bg-gray-50 transition-colors">
               <div className="flex items-start justify-between mb-3">
                 <div className="flex items-center gap-3">
-                  {/* <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-700 rounded-full flex items-center justify-center text-white font-bold text-lg">
-                    {u.name.charAt(0).toUpperCase()}
-                  </div> */}
                   <div>
                     <h3 className="font-semibold">{u.name}</h3>
                     <div className="flex items-center gap-2 text-sm text-gray-600">
@@ -640,6 +687,12 @@ export default function AdminUsers() {
               </div>
 
               <div className="flex gap-2 pt-2 border-t">
+                <button
+                  onClick={() => viewUserDetails(u._id)}
+                  className="flex-1 flex items-center justify-center gap-2 bg-green-100 text-green-600 px-3 py-2 rounded-lg text-sm hover:bg-green-200 transition-colors"
+                >
+                  <FaEye /> View
+                </button>
                 <button
                   onClick={() => editUser(u)}
                   className="flex-1 flex items-center justify-center gap-2 bg-blue-100 text-blue-600 px-3 py-2 rounded-lg text-sm hover:bg-blue-200 transition-colors"
@@ -703,6 +756,192 @@ export default function AdminUsers() {
           </p>
         </div>
       </div>
+
+      {/* View User Modal */}
+      {showViewModal && viewUser && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            {/* Modal Header */}
+            <div className="p-6 bg-gradient-to-r from-blue-600 to-blue-800 text-white rounded-t-xl sticky top-0">
+              <div className="flex justify-between items-center">
+                <div className="flex items-center gap-3">
+                  <FaUserCircle className="text-3xl" />
+                  <div>
+                    <h2 className="text-2xl font-bold">User Details</h2>
+                    <p className="text-blue-100 text-sm">Complete information about the user</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setShowViewModal(false)}
+                  className="text-white hover:text-gray-200 transition-colors"
+                >
+                  <FaTimesCircle className="text-2xl" />
+                </button>
+              </div>
+            </div>
+
+            {/* Modal Body */}
+            <div className="p-6 space-y-6">
+              {viewUserLoading ? (
+                <div className="flex justify-center py-8">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                </div>
+              ) : (
+                <>
+                  {/* Basic Information */}
+                  <div>
+                    <h3 className="text-lg font-semibold mb-4 flex items-center gap-2 text-gray-700">
+                      <FaUser className="text-blue-500" />
+                      Basic Information
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-gray-50 p-4 rounded-lg">
+                      <div>
+                        <p className="text-xs text-gray-500">Full Name</p>
+                        <p className="font-medium">{viewUser.user.name}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-500">Email Address</p>
+                        <p className="font-medium">{viewUser.user.email}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-500">Role</p>
+                        <div className="flex items-center gap-2 mt-1">
+                          {getRoleIcon(viewUser.user.role)}
+                          <span className="capitalize font-medium">{viewUser.user.role}</span>
+                        </div>
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-500">Gender</p>
+                        <div className="flex items-center gap-2 mt-1">
+                          {getGenderIcon(viewUser.user.gender)}
+                          <span className="capitalize">{viewUser.user.gender || 'Not specified'}</span>
+                        </div>
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-500">Date of Birth</p>
+                        <p className="font-medium">{formatDate(viewUser.user.Dob)}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-500">Status</p>
+                        <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${
+                          viewUser.user.isActive 
+                            ? 'bg-green-100 text-green-600' 
+                            : 'bg-red-100 text-red-600'
+                        }`}>
+                          {viewUser.user.isActive ? 'Active' : 'Inactive'}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Role-specific Information */}
+                  {viewUser.user.role === 'teacher' && (
+                    <div>
+                      <h3 className="text-lg font-semibold mb-4 flex items-center gap-2 text-gray-700">
+                        <FaChalkboardTeacher className="text-blue-500" />
+                        Teacher Information
+                      </h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-blue-50 p-4 rounded-lg">
+                        <div>
+                          <p className="text-xs text-gray-500">Subject</p>
+                          <p className="font-medium">{viewUser.user.subject || 'Not assigned'}</p>
+                        </div>
+                        <div>
+                          <p className="text-xs text-gray-500">Assigned Class</p>
+                          <p className="font-medium">{viewUser.user.assignedClass || 'Not assigned'}</p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {viewUser.user.role === 'student' && (
+                    <>
+                      <div>
+                        <h3 className="text-lg font-semibold mb-4 flex items-center gap-2 text-gray-700">
+                          <FaUserGraduate className="text-green-500" />
+                          Student Information
+                        </h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-green-50 p-4 rounded-lg">
+                          <div>
+                            <p className="text-xs text-gray-500">Class</p>
+                            <p className="font-medium">
+                              {viewUser.classInfo 
+                                ? `${viewUser.classInfo.className} - ${viewUser.classInfo.section}`
+                                : 'Not assigned'}
+                            </p>
+                          </div>
+                          <div>
+                            <p className="text-xs text-gray-500">Roll Number</p>
+                            <p className="font-medium">{viewUser.user.rollNo || 'Not assigned'}</p>
+                          </div>
+                          <div>
+                            <p className="text-xs text-gray-500">Admission Number</p>
+                            <p className="font-medium">{viewUser.user.admissionNo || 'Not assigned'}</p>
+                          </div>
+                          {viewUser.classInfo?.classTeacher && (
+                            <div>
+                              <p className="text-xs text-gray-500">Class Teacher</p>
+                              <p className="font-medium">{viewUser.classInfo.classTeacher.name}</p>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </>
+                  )}
+
+                  {viewUser.user.role === 'accountant' && (
+                    <div>
+                      <h3 className="text-lg font-semibold mb-4 flex items-center gap-2 text-gray-700">
+                        <FaUserTie className="text-orange-500" />
+                        Accountant Information
+                      </h3>
+                      <div className="bg-orange-50 p-4 rounded-lg">
+                        <p className="text-sm text-gray-600">No additional information available</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Account Information */}
+                  <div>
+                    <h3 className="text-lg font-semibold mb-4 flex items-center gap-2 text-gray-700">
+                      <FaIdCard className="text-purple-500" />
+                      Account Information
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-purple-50 p-4 rounded-lg">
+                      <div>
+                        <p className="text-xs text-gray-500">User ID</p>
+                        <p className="font-medium text-sm">{viewUser.user._id}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-500">Created By</p>
+                        <p className="font-medium">{viewUser.user.createdBy?.name || 'System'}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-500">Created At</p>
+                        <p className="font-medium">{formatDate(viewUser.user.createdAt)}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-500">Last Updated</p>
+                        <p className="font-medium">{formatDate(viewUser.user.updatedAt)}</p>
+                      </div>
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
+
+            {/* Modal Footer */}
+            <div className="p-6 border-t bg-gray-50 rounded-b-xl">
+              <button
+                onClick={() => setShowViewModal(false)}
+                className="w-full bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
