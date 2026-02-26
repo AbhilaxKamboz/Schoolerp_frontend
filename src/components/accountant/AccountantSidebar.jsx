@@ -1,20 +1,9 @@
-import { 
-  FaHome, 
-  FaUserCircle, 
-  FaMoneyBillWave, 
-  FaHandHoldingUsd,
-  FaCreditCard,
-  FaUsers,
-  FaHistory,
-  FaExclamationTriangle,
-  FaFileInvoiceDollar,
-  FaTimes
-} from "react-icons/fa";
+import { FaHome, FaUserCircle, FaMoneyBillWave, FaHandHoldingUsd, FaCreditCard, FaUsers, FaHistory, FaExclamationTriangle, FaFileInvoiceDollar, FaTimes, FaUserPlus   } from "react-icons/fa";
 
 export default function AccountantSidebar({ active, setActive, setMobileMenuOpen }) {
   const menuItems = [
     { id: "dashboard", label: "Dashboard", icon: <FaHome /> },
-    { id: "profile", label: "My Profile", icon: <FaUserCircle /> },
+    { id: "create-user", label: "Create User", icon: <FaUserPlus  /> },
     { id: "fee-structures", label: "Fee Structures", icon: <FaMoneyBillWave /> },
     { id: "assign-fee", label: "Assign Fee", icon: <FaHandHoldingUsd /> },
     { id: "receive-payment", label: "Receive Payment", icon: <FaCreditCard /> },
@@ -22,6 +11,7 @@ export default function AccountantSidebar({ active, setActive, setMobileMenuOpen
     { id: "payment-history", label: "Payment History", icon: <FaHistory /> },
     { id: "due-fees", label: "Due Fees", icon: <FaExclamationTriangle /> },
     { id: "reports", label: "Reports", icon: <FaFileInvoiceDollar /> },
+    { id: "profile", label: "My Profile", icon: <FaUserCircle /> },
   ];
 
   const handleItemClick = (id) => {
@@ -60,11 +50,6 @@ export default function AccountantSidebar({ active, setActive, setMobileMenuOpen
           </button>
         ))}
       </nav>
-
-      {/* Footer with user info - optional */}
-      <div className="absolute bottom-0 w-full p-4 border-t hidden md:block">
-        <p className="text-xs text-gray-500 text-center">School ERP v1.0</p>
-      </div>
     </aside>
   );
 }

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import AccountantSidebar from "./AccountantSidebar";
 import AccountantDashboardHome from "./AccountantDashboardHome";
+import AccountantCreateUser from "./AccountantCreateUser";
 import AccountantProfile from "./AccountantProfile";
 import FeeStructure from "./FeeStructure";
 import AssignFee from "./AssignFee";
@@ -41,7 +42,7 @@ export default function AccountantDashboard() {
       {/* Main content area - Adjusts padding for mobile */}
       <main className="flex-1 p-4 md:p-6 overflow-auto mt-16 md:mt-0">
         {active === "dashboard" && <AccountantDashboardHome setActive={setActive} />}
-        {active === "profile" && <AccountantProfile />}
+        {active === "create-user" && <AccountantCreateUser />}
         {active === "fee-structures" && <FeeStructure />}
         {active === "assign-fee" && <AssignFee />}
         {active === "receive-payment" && <ReceivePayment />}
@@ -49,6 +50,7 @@ export default function AccountantDashboard() {
         {active === "payment-history" && <PaymentHistory />}
         {active === "due-fees" && <DueFees />}
         {active === "reports" && <FeeReports />}
+        {active === "profile" && <AccountantProfile />}
       </main>
     </div>
   );
