@@ -87,7 +87,7 @@ export default function StudentDashboard() {
       )}
 
       <div className="flex min-h-screen">
-        {/* Sidebar */}
+        {/* Sidebar - fixed on desktop */}
         <StudentSidebar
           active={active}
           setActive={setActive}
@@ -96,12 +96,12 @@ export default function StudentDashboard() {
           onClose={() => setSidebarOpen(false)}
         />
 
-        {/* Main Content */}
+        {/* Main Content - with left margin on desktop */}
         <main
           className={`
             flex-1 w-full transition-all duration-300
+            ${!isMobile ? 'ml-64' : ''}
             ${isMobile ? 'pt-16 pb-20' : 'pt-0 pb-0'}
-            ${isTablet && !sidebarOpen ? 'ml-0' : ''}
           `}
         >
           {/* Content Area with proper padding */}

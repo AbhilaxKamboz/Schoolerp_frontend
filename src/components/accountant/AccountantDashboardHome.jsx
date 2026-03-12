@@ -2,21 +2,17 @@ import { useEffect, useState } from "react";
 import API from "../../api/api";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import { 
-  FaMoneyBillWave, FaUsers, FaCheckCircle, 
-  FaExclamationTriangle, FaCalendarAlt, FaChartLine,
-  FaDownload, FaHistory, FaCreditCard, FaHandHoldingUsd
+import { FaMoneyBillWave, FaUsers, FaCheckCircle, FaExclamationTriangle, FaCalendarAlt, FaChartLine, FaDownload, FaHistory, FaCreditCard, FaHandHoldingUsd
 } from "react-icons/fa";
-import {
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, 
-  Legend, ResponsiveContainer, PieChart, Pie, Cell
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell
 } from 'recharts';
+import Swal from "sweetalert2";
 
 export default function AccountantDashboardHome({ setActive }) {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [dateRange, setDateRange] = useState("month"); // week, month, year
-  
+
   const navigate = useNavigate();
   const { logout } = useAuth();
 
@@ -44,9 +40,19 @@ export default function AccountantDashboardHome({ setActive }) {
     }
   };
 
-  const handleLogout = () => {
-    logout();
-    navigate("/");
+  const handleLogout = async () => {
+    const result = await Swal.fire({
+      icon: "warning",
+      title: "Are You sure want to Logout",
+      showCancelButton: true,
+      confirmButtonText: "Yes",
+      cancelButtonText: "Cancel"
+    });
+
+    if (result.isConfirmed) {
+      logout();
+      navigate("/");
+    }
   };
 
   const downloadReport = async () => {
@@ -54,7 +60,7 @@ export default function AccountantDashboardHome({ setActive }) {
       const res = await API.get("/accountant/fee-report", {
         responseType: 'blob'
       });
-      
+
       // Create download link
       const url = window.URL.createObjectURL(new Blob([res.data]));
       const link = document.createElement('a');
@@ -110,7 +116,7 @@ export default function AccountantDashboardHome({ setActive }) {
             onClick={downloadReport}
             className="flex-1 sm:flex-none flex items-center justify-center gap-2 bg-blue-600 text-white px-3 md:px-4 py-2 rounded text-sm hover:bg-blue-700"
           >
-            <FaDownload className="text-sm" /> 
+            <FaDownload className="text-sm" />
             <span className="hidden sm:inline">Download Report</span>
             <span className="sm:hidden">Report</span>
           </button>
@@ -131,8 +137,8 @@ export default function AccountantDashboardHome({ setActive }) {
               key={range}
               onClick={() => setDateRange(range)}
               className={`px-3 md:px-4 py-1.5 md:py-2 rounded text-sm capitalize whitespace-nowrap
-                ${dateRange === range 
-                  ? 'bg-purple-600 text-white' 
+                ${dateRange === range
+                  ? 'bg-purple-600 text-white'
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                 }`}
             >
@@ -144,31 +150,31 @@ export default function AccountantDashboardHome({ setActive }) {
 
       {/* Overview Stats Cards - Responsive Grid */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
-        <StatCard 
+        <StatCard
           icon={FaMoneyBillWave}
           title="Total Collected"
           value={`₹${(data?.amounts?.totalCollected || 0).toLocaleString()}`}
           subtitle="Overall collections"
           bgColor="bg-green-500"
         />
-        
-        <StatCard 
+
+        <StatCard
           icon={FaExclamationTriangle}
           title="Total Due"
           value={`₹${(data?.amounts?.totalDue || 0).toLocaleString()}`}
           subtitle="Pending amount"
           bgColor="bg-red-500"
         />
-        
-        <StatCard 
+
+        <StatCard
           icon={FaCalendarAlt}
           title="This Month"
           value={`₹${(data?.amounts?.monthlyCollection || 0).toLocaleString()}`}
           subtitle="Monthly collection"
           bgColor="bg-blue-500"
         />
-        
-        <StatCard 
+
+        <StatCard
           icon={FaChartLine}
           title="Collection Rate"
           value={`${data?.overview?.collectionRate || 0}%`}
@@ -229,7 +235,7 @@ export default function AccountantDashboardHome({ setActive }) {
                   cx="50%"
                   cy="50%"
                   labelLine={false}
-                  label={({ name, percent }) => 
+                  label={({ name, percent }) =>
                     window.innerWidth < 768 ? '' : `${name}: ${(percent * 100).toFixed(0)}%`
                   }
                   outerRadius={window.innerWidth < 768 ? 60 : 80}
@@ -262,8 +268,8 @@ export default function AccountantDashboardHome({ setActive }) {
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={data?.classWise || []}>
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis 
-                  dataKey="_id.className" 
+                <XAxis
+                  dataKey="_id.className"
                   tick={{ fontSize: window.innerWidth < 768 ? 10 : 12 }}
                   interval={window.innerWidth < 768 ? 1 : 0}
                 />
@@ -289,7 +295,7 @@ export default function AccountantDashboardHome({ setActive }) {
             View All →
           </button>
         </div>
-        
+
         {/* Mobile: Horizontal scroll, Desktop: Normal table */}
         <div className="overflow-x-auto">
           {data?.recentPayments?.length > 0 ? (
@@ -340,7 +346,7 @@ export default function AccountantDashboardHome({ setActive }) {
             <FaCreditCard className="text-purple-500 text-xl md:text-2xl mx-auto mb-1 md:mb-2" />
             <span className="text-xs md:text-sm block">Receive Payment</span>
           </button>
-          
+
           <button
             onClick={() => setActive("assign-fee")}
             className="p-3 md:p-4 border rounded-lg hover:bg-green-50 hover:border-green-300 transition-colors"
@@ -348,7 +354,7 @@ export default function AccountantDashboardHome({ setActive }) {
             <FaHandHoldingUsd className="text-green-500 text-xl md:text-2xl mx-auto mb-1 md:mb-2" />
             <span className="text-xs md:text-sm block">Assign Fee</span>
           </button>
-          
+
           <button
             onClick={() => setActive("fee-structures")}
             className="p-3 md:p-4 border rounded-lg hover:bg-blue-50 hover:border-blue-300 transition-colors"
@@ -356,7 +362,7 @@ export default function AccountantDashboardHome({ setActive }) {
             <FaMoneyBillWave className="text-blue-500 text-xl md:text-2xl mx-auto mb-1 md:mb-2" />
             <span className="text-xs md:text-sm block">Fee Structures</span>
           </button>
-          
+
           <button
             onClick={() => setActive("due-fees")}
             className="p-3 md:p-4 border rounded-lg hover:bg-orange-50 hover:border-orange-300 transition-colors"

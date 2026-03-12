@@ -4,6 +4,7 @@ import {
 } from "react-icons/fa";
 import { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
 export default function AdminSidebar({ active, setActive }) {
@@ -11,6 +12,7 @@ export default function AdminSidebar({ active, setActive }) {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const { logout } = useAuth();
+  const navigate = useNavigate();
 
   // Close mobile menu on window resize (if screen becomes large)
   useEffect(() => {
@@ -39,19 +41,19 @@ export default function AdminSidebar({ active, setActive }) {
   };
 
   const handleLogout = async () => {
-      Swal.fire({
-        icon: "warning",
-        title: "Are You sure want to Logout",
-        showCancelButton: true,
-        confirmButtonText: "Yes",
-        cancelButtonText: "Cancel"
-      }).then((result) => {
-        if (result.isConfirmed) {
-          logout();
-          navigate("/");
-        }
-      })
-    };
+    const result = await Swal.fire({
+      icon: "warning",
+      title: "Are You sure want to Logout",
+      showCancelButton: true,
+      confirmButtonText: "Yes",
+      cancelButtonText: "Cancel"
+    });
+    
+    if (result.isConfirmed) {
+      logout();
+      navigate("/");
+    }
+  };
 
   // Determine sidebar width based on state
   const sidebarWidth = isCollapsed && !isHovered ? 'w-20' : 'w-64';
@@ -79,13 +81,13 @@ export default function AdminSidebar({ active, setActive }) {
         />
       )}
 
-      {/* Sidebar - Desktop (always visible) + Mobile (conditional) */}
+      {/* Sidebar - FIXED on desktop, slide-out on mobile */}
       <aside 
         className={`
-          fixed lg:static inset-y-0 left-0 z-50
+          fixed inset-y-0 left-0 z-50
           transform transition-all duration-300 ease-in-out
           ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
-          ${sidebarWidth} bg-white shadow-xl lg:shadow-md
+          ${sidebarWidth} bg-white shadow-xl
           flex flex-col h-full
         `}
         onMouseEnter={() => setIsHovered(true)}

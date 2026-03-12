@@ -27,8 +27,12 @@ export default function AdminDashboard() {
     <div className="flex min-h-screen bg-gray-100">
       <AdminSidebar active={active} setActive={setActive} />
 
-      {/* Add top and bottom padding for mobile */}
-      <main className={`flex-1 overflow-auto ${isMobile ? 'pt-16 pb-20' : ''}`}>
+      {/* Desktop: left margin for fixed sidebar, Mobile: top/bottom padding */}
+      <main className={`
+        flex-1 overflow-auto transition-all duration-300
+        ${!isMobile ? 'ml-64' : ''}
+        ${isMobile ? 'pt-16 pb-20' : ''}
+      `}>
         <div className="p-6">
           {active === "dashboard" && <DashboardHome setActive={setActive} />}
           {active === "users" && <AdminUsers />}

@@ -43,18 +43,18 @@ export default function StudentSidebar({ active, setActive, isMobile, sidebarOpe
   };
 
   const handleLogout = async () => {
-    Swal.fire({
+    const result = await Swal.fire({
       icon: "warning",
       title: "Are You sure want to Logout",
       showCancelButton: true,
       confirmButtonText: "Yes",
       cancelButtonText: "Cancel"
-    }).then((result) => {
-      if (result.isConfirmed) {
-        logout();
-        navigate("/");
-      }
-    })
+    });
+    
+    if (result.isConfirmed) {
+      logout();
+      navigate("/");
+    }
   };
 
   const getColorClasses = (color, isActive) => {
@@ -129,12 +129,12 @@ export default function StudentSidebar({ active, setActive, isMobile, sidebarOpe
       <aside
         className={`
           ${sidebarWidth} 
-          h-full bg-white shadow-xl transition-all duration-300 ease-in-out
-          flex flex-col overflow-hidden
+          fixed inset-y-0 left-0 h-full bg-white shadow-xl transition-all duration-300 ease-in-out
+          flex flex-col overflow-hidden z-50
           ${isMobile
-            ? `fixed top-0 left-0 h-full z-50 transform transition-transform duration-300
-               ${sidebarOpen ? "translate-x-0" : "-translate-x-full"} rounded-r-2xl`
-            : "static"}
+            ? `transform transition-transform duration-300 ${sidebarOpen ? "translate-x-0" : "-translate-x-full"} rounded-r-2xl`
+            : ""
+          }
         `}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
