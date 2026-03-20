@@ -9,7 +9,6 @@ export default function LibrarianProfile() {
   const [profile, setProfile] = useState(null);
   const [editMode, setEditMode] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [showPasswordModal, setShowPasswordModal] = useState(false);
   
   // Form state
   const [form, setForm] = useState({
@@ -18,13 +17,6 @@ export default function LibrarianProfile() {
     Dob: "",
     employeeId: "",
     qualification: ""
-  });
-
-  // Password change state
-  const [passwordData, setPasswordData] = useState({
-    currentPassword: "",
-    newPassword: "",
-    confirmPassword: ""
   });
 
   useEffect(() => {
@@ -56,13 +48,6 @@ export default function LibrarianProfile() {
     });
   };
 
-  const handlePasswordChange = (e) => {
-    setPasswordData({
-      ...passwordData,
-      [e.target.name]: e.target.value
-    });
-  };
-
   const updateProfile = async (e) => {
     e.preventDefault();
     try {
@@ -72,35 +57,6 @@ export default function LibrarianProfile() {
       fetchProfile();
     } catch (err) {
       errorAlert("Error", err.response?.data?.message || "Failed to update profile");
-    }
-  };
-
-  const changePassword = async (e) => {
-    e.preventDefault();
-    
-    if (passwordData.newPassword !== passwordData.confirmPassword) {
-      return errorAlert("Error", "New passwords do not match");
-    }
-    
-    if (passwordData.newPassword.length < 6) {
-      return errorAlert("Error", "Password must be at least 6 characters");
-    }
-
-    try {
-      await API.put("/librarian/change-password", {
-        currentPassword: passwordData.currentPassword,
-        newPassword: passwordData.newPassword
-      });
-      
-      successAlert("Success", "Password changed successfully");
-      setShowPasswordModal(false);
-      setPasswordData({
-        currentPassword: "",
-        newPassword: "",
-        confirmPassword: ""
-      });
-    } catch (err) {
-      errorAlert("Error", err.response?.data?.message || "Failed to change password");
     }
   };
 
@@ -206,16 +162,6 @@ export default function LibrarianProfile() {
                 </div>
               </div>
             </div>
-
-            {/* Action Buttons */}
-            <div className="flex gap-4 pt-4 border-t">
-              <button
-                onClick={() => setShowPasswordModal(true)}
-                className="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700"
-              >
-                <FaKey /> Change Password
-              </button>
-            </div>
           </div>
         ) : (
           /* Edit Mode */
@@ -303,77 +249,6 @@ export default function LibrarianProfile() {
           </form>
         )}
       </div>
-
-      {/* Password Change Modal */}
-      {showPasswordModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl max-w-md w-full">
-            <div className="p-4 bg-gradient-to-r from-purple-600 to-purple-800 text-white rounded-t-xl">
-              <h3 className="text-xl font-bold">Change Password</h3>
-            </div>
-            <form onSubmit={changePassword} className="p-6 space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Current Password
-                </label>
-                <input
-                  type="password"
-                  name="currentPassword"
-                  value={passwordData.currentPassword}
-                  onChange={handlePasswordChange}
-                  className="w-full border p-2.5 rounded-lg focus:ring-2 focus:ring-purple-500"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  New Password
-                </label>
-                <input
-                  type="password"
-                  name="newPassword"
-                  value={passwordData.newPassword}
-                  onChange={handlePasswordChange}
-                  className="w-full border p-2.5 rounded-lg focus:ring-2 focus:ring-purple-500"
-                  required
-                  minLength="6"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Confirm Password
-                </label>
-                <input
-                  type="password"
-                  name="confirmPassword"
-                  value={passwordData.confirmPassword}
-                  onChange={handlePasswordChange}
-                  className="w-full border p-2.5 rounded-lg focus:ring-2 focus:ring-purple-500"
-                  required
-                />
-              </div>
-
-              <div className="flex gap-3 pt-4">
-                <button
-                  type="submit"
-                  className="flex-1 bg-purple-600 text-white py-2 rounded-lg hover:bg-purple-700"
-                >
-                  Update Password
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setShowPasswordModal(false)}
-                  className="flex-1 bg-gray-500 text-white py-2 rounded-lg hover:bg-gray-600"
-                >
-                  Cancel
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
