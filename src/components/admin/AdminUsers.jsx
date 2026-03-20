@@ -21,7 +21,6 @@ export default function AdminUsers() {
   const [search, setSearch] = useState("");
   const [availableClasses, setAvailableClasses] = useState([]);
   const [loading, setLoading] = useState(true);
-<<<<<<< HEAD
   const [isMobile, setIsMobile] = useState(false);
 
   // Pagination State
@@ -37,11 +36,6 @@ export default function AdminUsers() {
   const [statusFilter, setStatusFilter] = useState("");
   const [showFilters, setShowFilters] = useState(false);
 
-=======
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
-  
->>>>>>> 85d39f61b250406e13cd79d5f2691c4ea5644130
   // View User Modal State
   const [viewUser, setViewUser] = useState(null);
   const [showViewModal, setShowViewModal] = useState(false);
