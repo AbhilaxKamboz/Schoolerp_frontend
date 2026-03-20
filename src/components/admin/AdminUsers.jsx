@@ -21,6 +21,7 @@ export default function AdminUsers() {
   const [search, setSearch] = useState("");
   const [availableClasses, setAvailableClasses] = useState([]);
   const [loading, setLoading] = useState(true);
+<<<<<<< HEAD
   const [isMobile, setIsMobile] = useState(false);
 
   // Pagination State
@@ -36,6 +37,11 @@ export default function AdminUsers() {
   const [statusFilter, setStatusFilter] = useState("");
   const [showFilters, setShowFilters] = useState(false);
 
+=======
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  
+>>>>>>> 85d39f61b250406e13cd79d5f2691c4ea5644130
   // View User Modal State
   const [viewUser, setViewUser] = useState(null);
   const [showViewModal, setShowViewModal] = useState(false);
@@ -77,7 +83,6 @@ export default function AdminUsers() {
     joiningDate: ""
   });
 
-  /* FETCH USERS WITH PAGINATION AND FILTERS */
   /* FETCH USERS WITH PAGINATION AND FILTERS */
 const fetchUsers = async () => {
   try {
@@ -258,7 +263,6 @@ const fetchUsersFallback = async () => {
       await API.put(`/admin/user/status/${id}`, {
         isActive: !current
       });
-
       await Swal.fire({
         title: 'Updated!',
         text: `User ${current ? 'deactivated' : 'activated'} successfully`,
@@ -266,7 +270,6 @@ const fetchUsersFallback = async () => {
         timer: 2000,
         showConfirmButton: false
       });
-
       fetchUsers();
     } catch (err) {
       errorAlert("Error", "Failed to update status");
@@ -315,17 +318,14 @@ const fetchUsersFallback = async () => {
       preConfirm: () => {
         const password = document.getElementById('password').value;
         const confirmPassword = document.getElementById('confirmPassword').value;
-
         if (!password || password.length < 6) {
           Swal.showValidationMessage('Password must be at least 6 characters');
           return false;
         }
-
         if (password !== confirmPassword) {
           Swal.showValidationMessage('Passwords do not match');
           return false;
         }
-
         return { password };
       }
     });
@@ -424,7 +424,6 @@ const fetchUsersFallback = async () => {
             Manage all users in the system
           </p>
         </div>
-
         {/* Create User Button */}
         <button
           onClick={() => {
@@ -518,7 +517,6 @@ const fetchUsersFallback = async () => {
               {editId ? 'Edit User' : 'Create New User'}
             </h2>
           </div>
-
           <form onSubmit={saveUser} className="p-4 md:p-6 space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {/* Name Input */}

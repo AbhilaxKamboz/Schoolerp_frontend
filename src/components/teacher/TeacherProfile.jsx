@@ -158,6 +158,7 @@ export default function TeacherProfile() {
                         {/* Content */}
                         {!editMode ? (
                             /* ===== VIEW MODE ===== */
+
                             <div className="pt-16 sm:pt-20 p-4 md:p-6">
                                 {/* Name and Role */}
                                 <div className="mb-6">
@@ -183,6 +184,7 @@ export default function TeacherProfile() {
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
                                         {/* Email */}
                                         <div className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
+
                                             <FaEnvelope className="text-blue-500 text-lg mt-1 flex-shrink-0" />
                                             <div className="min-w-0 flex-1">
                                                 <p className="text-xs text-gray-500">Email</p>
@@ -212,7 +214,7 @@ export default function TeacherProfile() {
                                             </div>
                                         </div>
 
-                                        {/* Joining Date - 👈 NEW */}
+                                        {/* Joining Date  */}
                                         <div className="flex items-start gap-3 p-3 bg-blue-50 rounded-lg">
                                             <FaClock className="text-blue-500 text-lg mt-1 flex-shrink-0" />
                                             <div className="min-w-0 flex-1">
@@ -363,7 +365,7 @@ export default function TeacherProfile() {
                                             />
                                         </div>
 
-                                        {/* Joining Date - 👈 NEW */}
+                                        {/* Joining Date -  NEW */}
                                         <div>
                                             <label className="block text-sm font-medium text-gray-700 mb-1">
                                                 Joining Date

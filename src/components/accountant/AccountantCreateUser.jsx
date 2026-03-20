@@ -88,7 +88,6 @@ export default function AccountantCreateUser() {
     try {
       setLoading(true);
       await API.post("/admin/user/create", form);
-
       await Swal.fire({
         title: 'Success!',
         text: 'User created successfully',
@@ -156,7 +155,6 @@ export default function AccountantCreateUser() {
           </p>
         </div>
       </div>
-
       {/* Create User Form */}
       <div className="bg-white rounded-xl shadow-lg overflow-hidden">
         <div className="p-4 bg-gradient-to-r from-purple-600 to-purple-800 text-white">
@@ -164,7 +162,6 @@ export default function AccountantCreateUser() {
             <FaUserPlus /> User Registration Form
           </h2>
         </div>
-
         <form onSubmit={createUser} className="p-4 md:p-6 space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {/* Name Input */}
