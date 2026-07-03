@@ -10,6 +10,7 @@ export default function AIChat() {
     useEffect(() => {
         loadHistory();
     }, []);
+    
 
     const loadHistory = async () => {
         try {
