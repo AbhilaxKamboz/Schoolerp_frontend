@@ -68,11 +68,9 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import API from "../api/api";
 import { useAuth } from "../context/AuthContext";
-import { 
-  FaUser, FaLock, FaEye, FaEyeSlash, 
-  FaGraduationCap, FaSchool
-} from "react-icons/fa";
+import { FaUser, FaLock, FaEye, FaEyeSlash, FaGraduationCap, FaSchool } from "react-icons/fa";
 import Swal from "sweetalert2";
+import toast from "react-hot-toast";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -110,8 +108,16 @@ export default function Login() {
     }
 
     try {
-      const res = await API.post("/login", { email, password });
-      
+      const loginPromise = API.post("/login", { email, password });
+
+      toast.promise(loginPromise, {
+        loading: "Signing in...",
+        success: "Login successful!",
+        error: "Invalid email or password",
+      });
+
+      const res = await loginPromise;
+
       if (rememberMe) {
         localStorage.setItem("rememberedEmail", email);
       } else {
@@ -122,7 +128,7 @@ export default function Login() {
       const role = res.data.user.role;
       navigate(`/${role}`);
     } catch (err) {
-      setError(err.response?.data?.message || "Invalid email or password");
+      setError(err.response?.data?.message );
     } finally {
       setLoading(false);
     }
@@ -132,7 +138,7 @@ export default function Login() {
     <div className="min-h-screen bg-blue-200 flex items-center justify-center p-4">
       <div className="w-full max-w-6xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-          
+
           {/* Left Side - Simple Branding */}
           <div className="hidden lg:block space-y-6">
             <div className="flex items-center gap-3">

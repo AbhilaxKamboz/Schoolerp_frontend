@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import API from "../../api/api";
 import { successAlert, errorAlert } from "../../utils/swal";
 import Swal from 'sweetalert2';
+import toast from "react-hot-toast";
 import {
   FaUser, FaEnvelope, FaUserTag, FaToggleOn, FaToggleOff,
   FaEdit, FaKey, FaSearch, FaPlus, FaTimes, FaSave,
@@ -187,10 +188,12 @@ const fetchUsersFallback = async () => {
     try {
       if (editId) {
         await API.put(`/admin/user/profile/${editId}`, form);
-        successAlert("Updated", "User updated successfully");
+        // successAlert("Updated", "User updated successfully");
+        toast.success("User Updated Sucessfully");
       } else {
         await API.post("/admin/user/create", form);
-        successAlert("Created", "User created successfully");
+        // successAlert("Created", "User created successfully");
+        toast.success("User Created Sucessfully");
       }
 
       resetForm();
@@ -232,7 +235,8 @@ const fetchUsersFallback = async () => {
       setViewUser(res.data);
       setShowViewModal(true);
     } catch (err) {
-      errorAlert("Error", "Failed to load user details");
+      // errorAlert("Error", "Failed to load user details");
+      toast.error("Failed to load user details");
     } finally {
       setViewUserLoading(false);
     }
@@ -327,7 +331,8 @@ const fetchUsersFallback = async () => {
     if (formValues) {
       try {
         await API.put(`/admin/user/change-password/${id}`, { password: formValues.password });
-        successAlert("Success", "Password updated successfully");
+        // successAlert("Success", "Password updated successfully");
+        toast.success('Password Updated Sucessfully');
       } catch (err) {
         errorAlert("Error", err.response?.data?.message || "Failed to update password");
       }
