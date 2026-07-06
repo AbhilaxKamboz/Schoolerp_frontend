@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import API from "../../api/api";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import { FaChalkboardTeacher, FaBook, FaUsers, FaCalendarCheck, FaTasks, FaSync } from "react-icons/fa";
+import { FaChalkboardTeacher, FaBook, FaUsers, FaCalendarCheck, FaTasks, FaSync, FaTimes  } from "react-icons/fa";
 import Swal from "sweetalert2";
 
 export default function TeacherDashboardHome({ setActive }) {

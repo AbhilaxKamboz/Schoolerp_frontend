@@ -11,6 +11,7 @@ import PaymentHistory from "./PaymentHistory";
 import DueFees from "./DueFees";
 import FeeReports from "./FeeReports";
 import AIChat from "../common/AIChat";
+import {FaTimes} from "react-icons/fa";
 
 export default function AccountantDashboard() {
   const [active, setActive] = useState("dashboard");

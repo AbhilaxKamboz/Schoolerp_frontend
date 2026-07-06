@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import API from "../../api/api";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import {FaUserGraduate, FaChalkboard, FaBook, FaTasks, FaCalendarCheck, FaChartLine, FaCheckCircle, FaArrowRight, FaSync, FaGraduationCap, FaAward } from "react-icons/fa";
+import {FaUserGraduate, FaChalkboard, FaBook, FaTasks, FaCalendarCheck, FaChartLine, FaCheckCircle, FaArrowRight, FaSync, FaGraduationCap, FaAward, FaTimes  } from "react-icons/fa";
 import { Tooltip, ResponsiveContainer, PieChart, Pie, Cell, } from 'recharts';
 import Swal from "sweetalert2";
 

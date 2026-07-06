@@ -7,6 +7,7 @@ import AdminSubjects from "./AdminSubjects";
 import AdminClassSubject from "./AdminClassSubject";
 import AdminProfile from "./AdminProfile";
 import AIChat from "../common/AIChat";
+import {FaTimes} from "react-icons/fa";
 
 export default function AdminDashboard() {
   const [active, setActive] = useState("dashboard");
